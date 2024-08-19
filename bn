@@ -1,0 +1,44 @@
+!pip install pgmpy
+import numpy as np
+import pandas as pd
+from pgmpy.estimators import MaximumLikelihoodEstimator
+from pgmpy.models import BayesianNetwork
+from pgmpy.inference import VariableElimination
+
+# Load the dataset
+heartDisease = pd.read_csv("/content/heartdisease.csv")
+
+# Replace missing values with NaN
+heartDisease = heartDisease.replace('?', np.nan)
+
+# Print sample instances from the dataset
+print('Sample instances from the dataset are given below')
+print(heartDisease.head())
+
+# Print attributes and datatypes
+print('\nAttributes and datatypes')
+print(heartDisease.dtypes)
+
+# Define the Bayesian Network model
+model = BayesianNetwork([('age', 'heartdisease'),
+                         ('Gender', 'heartdisease'),
+                         ('Family', 'heartdisease'),
+                         ('diet', 'heartdisease'),
+                         ('Lifestyle', 'heartdisease'),
+                         ('cholestrol', 'heartdisease')])
+
+# Learn the Conditional Probability Distributions (CPDs) using Maximum Likelihood Estimator
+print('\nLearning CPD using Maximum likelihood estimators')
+model.fit(heartDisease, estimator=MaximumLikelihoodEstimator)
+
+# Perform inference with Bayesian Network
+HeartDiseasetest_infer = VariableElimination(model)
+
+# Query the model
+print('\n1. Probability of HeartDisease given evidence= cholestrol')
+q1 = HeartDiseasetest_infer.query(variables=['heartdisease'], evidence={'cholestrol': 1})
+print(q1)
+
+print('\n2. Probability of HeartDisease given evidence= cholestrol')
+q2 = HeartDiseasetest_infer.query(variables=['heartdisease'], evidence={'cholestrol': 2})
+print(q2)
