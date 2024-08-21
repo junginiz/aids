@@ -32,3 +32,12 @@ X_train = sc_X.fit_transform(X_train)
 X_test = sc_X.transform(X_test)
 
 classifer1 = GaussianNB()
+classifer1.fit(X_train, y_train)
+
+y_pred1 = classifer1.predict(X_test)
+
+print('Accuracy Metrics: \n')
+print('Accuracy: ', accuracy_score(y_test, y_pred1))
+print('Recall: ', recall_score(y_test, y_pred1))
+print('Precision: ', precision_score(y_test, y_pred1))
+print('Confusion Matrix: \n', confusion_matrix(y_test, y_pred1))
